@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Накрутка в Telegram: подписчики, реакции, просмотры</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #B3121D;
+    --bg-deep: #8F0D16;
+    --ink: #14090A;
+    --paper: #FFF3EA;
+    --ember: #FFB347;
+    --muted: #FFD9CC;
+    --line: rgba(255, 243, 234, .35);
+    --focus: #FFFFFF;
+    --display: "Unbounded", "Trebuchet MS", "Segoe UI", sans-serif;
+    --text: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #8F0D16;
+      --bg-deep: #6E0A11;
+      --line: rgba(255, 243, 234, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #8F0D16;
+    --bg-deep: #6E0A11;
+    --line: rgba(255, 243, 234, .3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--paper);
+    font-family: var(--text); font-size: 1.0625rem; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* header */
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; gap: 1rem; }
+  .logo { font-family: var(--display); font-weight: 900; font-size: 1rem; text-decoration: none; letter-spacing: -0.01em; }
+  .handle-link { font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--ember); padding-bottom: 2px; }
+
+  /* hero */
+  .hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 1rem; align-items: end; padding-top: clamp(1.5rem, 5vw, 4rem); }
+  .hero-copy { padding-bottom: clamp(2rem, 6vw, 5rem); }
+  h1 {
+    font-family: var(--display); font-weight: 900; font-size: clamp(2.1rem, 6.6vw, 4.6rem);
+    line-height: 1.04; letter-spacing: -0.03em; margin: 0 0 1.25rem;
+  }
+  .lead { max-width: 46ch; color: var(--muted); font-size: 1.15rem; margin: 0 0 2rem; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600; cursor: pointer; font-family: var(--text); font-size: 1.05rem;
+    padding: .95rem 1.6rem; border-radius: 12px; border: 2px solid var(--ink);
+  }
+  .btn-main { background: var(--ink); color: var(--paper); }
+  .btn-main:hover { background: #000; }
+  .btn-alt { background: transparent; color: var(--paper); border-color: var(--paper); margin-left: .5rem; }
+  .btn-alt:hover { background: rgba(255,243,234,.12); }
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .actions .btn-alt { margin-left: 0; }
+
+  .figure { align-self: end; display: flex; justify-content: center; }
+  .figure svg { width: min(440px, 100%); height: auto; display: block; }
+  .smoke { fill: none; stroke: var(--paper); stroke-width: 7; stroke-linecap: round; opacity: .0; animation: drift 5s ease-in-out infinite; }
+  .smoke.s2 { animation-delay: 1.6s; }
+  .smoke.s3 { animation-delay: 3.2s; }
+  @keyframes drift {
+    0%   { opacity: 0;   transform: translate(0, 18px); }
+    25%  { opacity: .55; }
+    100% { opacity: 0;   transform: translate(-14px, -70px); }
+  }
+  .tip { animation: glow 2.2s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+
+  /* sections */
+  section { padding: clamp(2.5rem, 7vw, 5rem) 0; }
+  .dark-band { background: var(--ink); color: var(--paper); }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 3.6vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 .75rem; }
+  .sub { margin: 0 0 2.25rem; max-width: 54ch; color: var(--muted); }
+
+  .svc-list { list-style: none; margin: 0; padding: 0; }
+  .svc { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: baseline; padding: 1.4rem 0; border-bottom: 1.5px solid rgba(255,243,234,.22); }
+  .svc:first-child { border-top: 1.5px solid rgba(255,243,234,.22); }
+  .svc h3 { font-family: var(--display); font-weight: 500; font-size: 1.15rem; margin: 0 0 .25rem; }
+  .svc p { margin: 0; color: #E9CFC4; max-width: 56ch; }
+  .price { font-family: var(--display); font-weight: 500; font-size: .95rem; background: var(--ember); color: var(--ink); padding: .4rem .85rem; border-radius: 8px; white-space: nowrap; }
+
+  /* calculator */
+  .calc { background: var(--paper); color: var(--ink); border-radius: 20px; padding: clamp(1.25rem, 4vw, 2.25rem); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; align-items: center; }
+  .calc h2 { color: var(--ink); }
+  .calc .sub { color: #5A3A36; margin-bottom: 0; }
+  .seg { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; }
+  .seg button {
+    font: inherit; font-weight: 500; cursor: pointer; padding: .55rem 1.05rem; border-radius: 999px;
+    border: 1.5px solid var(--ink); background: transparent; color: var(--ink);
+  }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  label.qty { display: flex; justify-content: space-between; font-weight: 500; margin-bottom: .5rem; }
+  input[type="range"] { width: 100%; accent-color: var(--bg); height: 28px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; margin: 1.25rem 0 1.25rem; padding-top: 1rem; border-top: 1.5px solid #E8CFC2; }
+  .total strong { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.02em; }
+  .calc .btn-main { width: 100%; text-align: center; }
+  .fineprint { margin: .9rem 0 0; font-size: .9rem; color: #6B4741; }
+
+  /* steps */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; counter-reset: s; }
+  .steps li { counter-increment: s; border-top: 3px solid var(--ember); padding-top: 1rem; }
+  .steps li::before { content: counter(s); font-family: var(--display); font-weight: 700; font-size: 1.6rem; display: block; margin-bottom: .35rem; }
+  .steps strong { display: block; font-family: var(--display); font-weight: 500; font-size: 1rem; margin-bottom: .25rem; }
+  .steps span { color: var(--muted); }
+
+  /* contact */
+  .contact { text-align: left; }
+  .big-handle {
+    display: inline-block; font-family: var(--display); font-weight: 900; text-decoration: none;
+    font-size: clamp(2rem, 8vw, 5rem); letter-spacing: -0.03em; line-height: 1.1; margin: .5rem 0 1.5rem;
+    border-bottom: 6px solid var(--ember); word-break: break-all;
+  }
+  footer { padding: 1.5rem 0 2.5rem; color: var(--muted); font-size: .9rem; border-top: 1.5px solid var(--line); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-copy { padding-bottom: 0; }
+    .figure { order: 2; margin-top: 1rem; }
+    .calc { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .svc { grid-template-columns: 1fr; gap: .6rem; }
+    .svc .price { justify-self: start; }
+  }
+  @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    .smoke { animation: none; opacity: .35; }
+    .tip { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#top">Накрутка TG</a>
+    <a class="handle-link" href="https://t.me/bogunder" target="_blank" rel="noopener">@bogunder</a>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div class="hero-copy">
+        <h1>Подписчики, реакции и просмотры для вашего Telegram</h1>
+        <p class="lead">Накрутка для каналов, чатов и отдельных постов. Выберите услугу, посчитайте цену ниже и напишите нам в Telegram.</p>
+        <div class="actions">
+          <a class="btn btn-main" href="https://t.me/bogunder" target="_blank" rel="noopener">Написать @bogunder</a>
+          <a class="btn btn-alt" href="#calc">Посчитать цену</a>
+        </div>
+      </div>
+
+      <div class="figure">
+        <svg viewBox="0 0 440 520" role="img" aria-label="Силуэт курящего человека в капюшоне" xmlns="http://www.w3.org/2000/svg">
+          <!-- body / hoodie -->
+          <path d="M20 520 C20 420 80 365 170 348 L270 348 C360 365 420 420 420 520 Z" fill="#14090A"/>
+          <!-- hood back -->
+          <path d="M150 250 C120 120 210 62 290 100 C350 130 372 250 335 352 L180 352 Z" fill="#1E0F11"/>
+          <!-- neck -->
+          <path d="M196 300 L260 300 L268 352 L190 352 Z" fill="#0B0405"/>
+          <!-- head profile facing left -->
+          <path d="M176 214 L154 240 L176 249 C176 275 192 303 220 312 L264 312 C292 290 304 250 305 212 C306 150 272 112 230 114 C192 118 174 160 176 214 Z" fill="#0B0405"/>
+          <!-- hood front rim -->
+          <path d="M176 214 C172 150 196 104 240 104 C290 104 320 150 312 230" fill="none" stroke="#2B1719" stroke-width="10" stroke-linecap="round"/>
+          <!-- cigarette -->
+          <line x1="176" y1="262" x2="118" y2="254" stroke="#FFF3EA" stroke-width="6" stroke-linecap="round"/>
+          <circle class="tip" cx="114" cy="253.5" r="5.5" fill="#FF7A2F"/>
+          <!-- smoke -->
+          <path class="smoke" d="M110 240 C96 210 130 196 112 164 C100 140 128 126 118 96"/>
+          <path class="smoke s2" d="M104 244 C84 214 118 200 98 170 C88 150 112 134 104 106"/>
+          <path class="smoke s3" d="M116 238 C104 214 138 204 124 176 C116 156 140 144 132 116"/>
+        </svg>
+      </div>
+    </div>
+  </main>
+</div>
+
+<section class="dark-band" id="services" aria-labelledby="svc-title">
+  <div class="wrap">
+    <h2 id="svc-title">Что можно заказать</h2>
+    <p class="sub">Цены указаны в звёздах Telegram (⭐) за 1000 штук. Точные условия и сроки уточняйте в личных сообщениях.</p>
+    <ul class="svc-list">
+      <li class="svc">
+        <div>
+          <h3>Подписчики</h3>
+          <p>Для каналов и групп. Количество и скорость набора выбираете вы.</p>
+        </div>
+        <span class="price">от 100 ⭐ / 1000</span>
+      </li>
+      <li class="svc">
+        <div>
+          <h3>Реакции</h3>
+          <p>Эмодзи-реакции под постами. Можно выбрать конкретный набор реакций.</p>
+        </div>
+        <span class="price">от 40 ⭐ / 1000</span>
+      </li>
+      <li class="svc">
+        <div>
+          <h3>Просмотры</h3>
+          <p>На последние посты или на один выбранный пост.</p>
+        </div>
+        <span class="price">от 15 ⭐ / 1000</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="calc" aria-labelledby="calc-title">
+  <div class="wrap">
+    <div class="calc">
+      <div>
+        <h2 id="calc-title">Калькулятор цены</h2>
+        <p class="sub">Выберите услугу и количество. Итог посчитается сразу, а заказ можно отправить в один клик.</p>
+      </div>
+      <div>
+        <div class="seg" role="group" aria-label="Услуга">
+          <button type="button" data-svc="sub" data-price="100" data-name="Подписчики" aria-pressed="true">Подписчики</button>
+          <button type="button" data-svc="rea" data-price="40" data-name="Реакции" aria-pressed="false">Реакции</button>
+          <button type="button" data-svc="vie" data-price="15" data-name="Просмотры" aria-pressed="false">Просмотры</button>
+        </div>
+        <label class="qty" for="qty"><span>Количество</span><output id="qty-out" for="qty">1 000</output></label>
+        <input id="qty" type="range" min="100" max="50000" step="100" value="1000">
+        <div class="total"><span>Итого</span><strong id="total">100 ⭐</strong></div>
+        <a class="btn btn-main" id="order" href="https://t.me/bogunder" target="_blank" rel="noopener">Заказать у @bogunder</a>
+        <p class="fineprint">Расчёт примерный. Итоговую цену подтверждает исполнитель в переписке.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-band" aria-labelledby="how-title">
+  <div class="wrap">
+    <h2 id="how-title">Как сделать заказ</h2>
+    <p class="sub">Четыре шага, вся связь через Telegram.</p>
+    <ol class="steps">
+      <li><strong>Напишите нам</strong><span>Откройте чат с @bogunder и скажите, что нужно.</span></li>
+      <li><strong>Пришлите ссылку</strong><span>На канал, чат или пост, который нужно продвинуть.</span></li>
+      <li><strong>Оплатите</strong><span>Оплата в звёздах Telegram (Stars), детали в переписке.</span></li>
+      <li><strong>Получите результат</strong><span>Начинаем работу и сообщаем, когда всё готово.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <h2 id="contact-title">Остались вопросы?</h2>
+    <p class="sub" style="margin-bottom:.5rem">Пишите в Telegram, отвечаем лично.</p>
+    <a class="big-handle" href="https://t.me/bogunder" target="_blank" rel="noopener">@bogunder</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Связь только через Telegram: @bogunder</div>
+</footer>
+
+<script>
+  var price = 100, name = "Подписчики";
+  var qty = document.getElementById("qty");
+  var out = document.getElementById("qty-out");
+  var totalEl = document.getElementById("total");
+  var order = document.getElementById("order");
+  var btns = document.querySelectorAll(".seg button");
+
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0"); }
+
+  function update() {
+    var q = Number(qty.value);
+    var sum = Math.ceil(q / 1000 * price);
+    out.textContent = fmt(q);
+    totalEl.textContent = fmt(sum) + "\u00A0⭐";
+    var msg = "Здравствуйте! Хочу заказать: " + name + ", " + fmt(q) + " шт. Расчёт на сайте: " + fmt(sum) + " ⭐.";
+    order.href = "https://t.me/bogunder?text=" + encodeURIComponent(msg);
+  }
+
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function () {
+      for (var j = 0; j < btns.length; j++) btns[j].setAttribute("aria-pressed", "false");
+      this.setAttribute("aria-pressed", "true");
+      price = Number(this.getAttribute("data-price"));
+      name = this.getAttribute("data-name");
+      update();
+    });
+  }
+  qty.addEventListener("input", update);
+  update();
+</script>
+</body>
+</html>
